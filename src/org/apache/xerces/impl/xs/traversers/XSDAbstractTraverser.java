@@ -48,6 +48,7 @@ import org.apache.xerces.util.NamespaceSupport;
 import org.apache.xerces.util.SymbolTable;
 import org.apache.xerces.util.XMLChar;
 import org.apache.xerces.util.XMLSymbols;
+import org.apache.xerces.xni.NamespaceContext;
 import org.apache.xerces.xni.QName;
 import org.apache.xerces.xs.XSAttributeUse;
 import org.apache.xerces.xs.XSConstants;
@@ -96,7 +97,7 @@ abstract class XSDAbstractTraverser {
     protected boolean               fValidateAnnotations = false;
     
     // a vector to store all the assertions up in the type hierarchy
-    private Vector baseAsserts = new Vector();
+    private Vector<XSAssertImpl> baseAsserts = new Vector<XSAssertImpl>();
     
     // used to validate default/fixed attribute values
     ValidationState fValidationState = new ValidationState();
@@ -302,10 +303,10 @@ abstract class XSDAbstractTraverser {
             XSMultiValueFacet mvFacet = (XSMultiValueFacet) multiValFacetsOfBaseType.item(i);
             if (mvFacet.getFacetKind() == XSSimpleTypeDefinition.FACET_ASSERT) {
                 // add asserts to the global Vector object
-                Vector assertsToAdd = mvFacet.getAsserts();
+                Vector<XSAssertImpl> assertsToAdd = mvFacet.getAsserts();
                 for (int j = 0; j < assertsToAdd.size(); j++) {
                    // add assertion to the list, only if it's already not present
-                   if (!assertExists((XSAssertImpl)assertsToAdd.get(j))) {
+                   if (!assertExists(assertsToAdd.get(j))) {
                        baseAsserts.add(assertsToAdd.get(j)); 
                    }
                 }
@@ -326,7 +327,7 @@ abstract class XSDAbstractTraverser {
       boolean assertExists = false;      
       
       for (int i = 0; i < baseAsserts.size(); i++) {
-          if (((XSAssertImpl)baseAsserts.get(i)).equals(assertVal)) {
+          if (baseAsserts.get(i).equals(assertVal)) {
               assertExists = true;
               break;
           }
@@ -346,11 +347,11 @@ abstract class XSDAbstractTraverser {
         short facetsFixed = 0; // facets that have fixed="true"        
         String facet;
         boolean hasQName = containsQName(baseValidator);
-        Vector enumData = null;
+        Vector<String> enumData = null;
         Vector assertData = null;
         XSObjectListImpl enumAnnotations = null;
         XSObjectListImpl patternAnnotations = null;
-        Vector enumNSDecls = hasQName ? new Vector() : null;       
+        Vector<NamespaceContext> enumNSDecls = hasQName ? new Vector<NamespaceContext>() : null;       
         int currentFacet = 0;
         xsFacets.reset();
         boolean seenPattern = false;
@@ -399,7 +400,7 @@ abstract class XSDAbstractTraverser {
                     schemaDoc.fValidationContext.setNamespaceSupport(schemaDoc.fNamespaceSupport);
                 }
                 if (enumData == null){
-                    enumData = new Vector();
+                    enumData = new Vector<String>();
                     enumAnnotations = new XSObjectListImpl();
                 }
                 enumData.addElement(enumVal);
@@ -730,7 +731,7 @@ abstract class XSDAbstractTraverser {
             // add all base assertions to the list of assertions to be processed
             if (baseAsserts.size() > 0) {
                 if (assertData == null) {
-                    assertData = new Vector();  
+                    assertData = new Vector<XSAssertImpl>();  
                 }
                 assertData.addAll(baseAsserts);
                 baseAsserts.clear();  // clear vector baseAsserts

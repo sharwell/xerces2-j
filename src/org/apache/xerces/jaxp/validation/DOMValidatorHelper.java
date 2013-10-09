@@ -565,7 +565,7 @@ final class DOMValidatorHelper implements ValidatorHelper, EntityState {
             return fNamespaceContext.getDeclaredPrefixAt(index);
         }
 
-        public Enumeration getAllPrefixes() {
+        public Enumeration<String> getAllPrefixes() {
             return fNamespaceContext.getAllPrefixes();
         }
 

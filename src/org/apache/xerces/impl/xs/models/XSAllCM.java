@@ -26,6 +26,7 @@ import org.apache.xerces.impl.xs.XSConstraints;
 import org.apache.xerces.impl.xs.XSElementDecl;
 import org.apache.xerces.impl.xs.XSElementDeclHelper;
 import org.apache.xerces.xni.QName;
+import org.apache.xerces.xs.XSObject;
 
 /**
  * XSAllCM implements XSCMValidator and handles &lt;all&gt;.
@@ -207,8 +208,8 @@ public class XSAllCM implements XSCMValidator {
      * @return       a Vector whose entries are instances of
      *               either XSWildcardDecl or XSElementDecl.
      */
-    public Vector whatCanGoHere(int[] state) {
-        Vector ret = new Vector();
+    public Vector<XSObject> whatCanGoHere(int[] state) {
+        Vector<XSObject> ret = new Vector<XSObject>();
         for (int i = 0; i < fNumElements; i++) {
             // we only try to look for a matching decl if we have not seen
             // this element yet.

@@ -41,7 +41,7 @@ import org.apache.xerces.xs.XSObject;
  *
  * @version $Id$
  */
-public class XSNamedMapImpl extends AbstractMap implements XSNamedMap {
+public class XSNamedMapImpl extends AbstractMap<QName, XSObject> implements XSNamedMap {
 
     /**
      * An immutable empty map.
@@ -204,7 +204,7 @@ public class XSNamedMapImpl extends AbstractMap implements XSNamedMap {
         return (get(key) != null);
     }
     
-    public Object get(Object key) {
+    public XSObject get(Object key) {
         if (key instanceof QName) {
             final QName name = (QName) key;
             String namespaceURI = name.getNamespaceURI();

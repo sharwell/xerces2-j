@@ -138,7 +138,7 @@ public class PSVIWriter implements XMLComponent, XMLDocumentFilter {
     protected XMLLocator fDocumentLocation;
 
     /** Attributes and Element Info  is  cached in stack */
-    private Stack _elementState = new Stack();
+    private Stack<ElementState> _elementState = new Stack<ElementState>();
 
     /** The number used for anonymous types */
     protected int fAnonNum;
@@ -147,10 +147,10 @@ public class PSVIWriter implements XMLComponent, XMLDocumentFilter {
     protected int fIndent;
 
     /** The map used to store IDs for types and elements */
-    protected Map fIDMap;
+    protected Map<XSObject, String> fIDMap;
 
     /** A list of ids for defined XSObjects */
-    protected List fDefined;
+    protected List<String> fDefined;
 
     private char[] fIndentChars =
         { '\t', '\t', '\t', '\t', '\t', '\t', '\t', '\t' };
@@ -181,8 +181,8 @@ public class PSVIWriter implements XMLComponent, XMLDocumentFilter {
             componentManager.getFeature(INCLUDE_IGNORABLE_WHITESPACE);
 
         fAnonNum = 1000;
-        fIDMap = new HashMap();
-        fDefined = new ArrayList();
+        fIDMap = new HashMap<XSObject, String>();
+        fDefined = new ArrayList<String>();
         fIndent = 0;
         fPSVINamespaceContext = new NamespaceSupport();
     } // reset(XMLComponentManager)
@@ -390,7 +390,7 @@ public class PSVIWriter implements XMLComponent, XMLDocumentFilter {
             fPSVINamespaceContext,
             null);
 
-        List attributes = new ArrayList();
+        List<String> attributes = new ArrayList<String>();
         attributes.add("xmlns:xsi");
         attributes.add("http://www.w3.org/2001/XMLSchema-instance");
         attributes.add(XMLSymbols.fCDATASymbol);
@@ -843,11 +843,11 @@ public class PSVIWriter implements XMLComponent, XMLDocumentFilter {
         sendElementEvent("prefix", "xml");
         sendElementEvent("namespaceName", NamespaceContext.XML_URI);
         sendUnIndentedElement("namespace");
-        Enumeration prefixes = fNamespaceContext.getAllPrefixes();
+        Enumeration<String> prefixes = fNamespaceContext.getAllPrefixes();
         while (prefixes.hasMoreElements()) {
             sendIndentedElement("namespace");
 
-            String prefix = (String)prefixes.nextElement();
+            String prefix = prefixes.nextElement();
             String uri = fNamespaceContext.getURI(prefix);
             sendElementEvent("prefix", prefix);
             sendElementEvent("namespaceName", uri);
@@ -1422,10 +1422,10 @@ public class PSVIWriter implements XMLComponent, XMLDocumentFilter {
                 sendUnIndentedElement("children");
 
                 //Create XMLAttributes from DOM
-                Attr[] atts = (Element) child == null ? null : DOMUtil.getAttrs((Element) child);
+                Attr[] atts = child == null ? null : DOMUtil.getAttrs(child);
                 XMLAttributes attrs = new XMLAttributesImpl();
                 for (int i=0; i<atts.length; i++) {
-                    Attr att = (Attr)atts[i];
+                    Attr att = atts[i];
                     attrs.addAttribute(
                             new QName(att.getPrefix(), att.getLocalName(), att.getName(), att.getNamespaceURI()),
                             "CDATA" ,att.getValue()
@@ -1459,7 +1459,7 @@ public class PSVIWriter implements XMLComponent, XMLDocumentFilter {
         }
 
         for (int i = 0; i < attrCount; i++) {
-            Attr att = (Attr)atts[i];
+            Attr att = atts[i];
             String localpart = DOMUtil.getLocalName(att);
             String prefix = att.getPrefix();
             if (localpart.equals(XMLSymbols.PREFIX_XMLNS)
@@ -1496,7 +1496,7 @@ public class PSVIWriter implements XMLComponent, XMLDocumentFilter {
         if (namespaceAttribute) {
             sendIndentedElement("namespaceAttributes");
             for (int i = 0; i < attrCount; i++) {
-                Attr att = (Attr)atts[i];
+                Attr att = atts[i];
                 String localpart = DOMUtil.getLocalName(att);
                 String prefix = att.getPrefix();
                 if (localpart.equals(XMLSymbols.PREFIX_XMLNS)
@@ -1725,10 +1725,10 @@ public class PSVIWriter implements XMLComponent, XMLDocumentFilter {
 
     private void processPSVIElementRef(
         String elementName,
-        List attributes,
+        List<String> attributes,
         XSObject obj) {
         if (attributes == null) {
-            attributes = new ArrayList();
+            attributes = new ArrayList<String>();
         }
         String ref = this.getID(obj);
         if (ref != null) {
@@ -1756,7 +1756,7 @@ public class PSVIWriter implements XMLComponent, XMLDocumentFilter {
     private void processPSVIAttributeDeclarationRef(XSAttributeDeclaration att) {
         if (att == null)
             return;
-        List attributes = new ArrayList();
+        List<String> attributes = new ArrayList<String>();
         attributes.add("name");
         attributes.add(att.getName());
         attributes.add(XMLSymbols.fCDATASymbol);
@@ -1883,7 +1883,7 @@ public class PSVIWriter implements XMLComponent, XMLDocumentFilter {
         this.sendEmptyElementEvent(tagname, null);
     } //sendEmptyElementEvent
 
-    private void sendEmptyElementEvent(String tagname, List attributes) {
+    private void sendEmptyElementEvent(String tagname, List<String> attributes) {
         this.sendIndent();
         fDocumentHandler.emptyElement(
             createQName(tagname),
@@ -1899,7 +1899,7 @@ public class PSVIWriter implements XMLComponent, XMLDocumentFilter {
      *
      * @throws IOEXception
      */
-    private void sendStartElementEvent(String tagname, List attributes) {
+    private void sendStartElementEvent(String tagname, List<String> attributes) {
         fDocumentHandler.startElement(
             createQName(tagname),
             createAttributes(attributes),
@@ -1929,7 +1929,7 @@ public class PSVIWriter implements XMLComponent, XMLDocumentFilter {
         this.sendIndentedElement(tagName, null);
     } //sendIndentedElement
 
-    private void sendIndentedElement(String tagName, List attributes) {
+    private void sendIndentedElement(String tagName, List<String> attributes) {
         this.sendIndent();
         this.sendStartElementEvent(tagName, attributes);
         this.sendNewLine();
@@ -1974,7 +1974,7 @@ public class PSVIWriter implements XMLComponent, XMLDocumentFilter {
 
     private void sendElementEvent(
         String elementName,
-        List attributes,
+        List<String> attributes,
         String elementValue) {
         XMLString text =
             elementValue == null
@@ -1988,11 +1988,11 @@ public class PSVIWriter implements XMLComponent, XMLDocumentFilter {
 
     private void sendElementEvent(
         String elementName,
-        List attributes,
+        List<String> attributes,
         XMLString elementValue) {
         if (elementValue == null || elementValue.length == 0) {
             if (attributes == null) {
-                attributes = new ArrayList();
+                attributes = new ArrayList<String>();
             }
             attributes.add("xsi:nil");
             attributes.add("true");
@@ -2013,7 +2013,7 @@ public class PSVIWriter implements XMLComponent, XMLDocumentFilter {
         // since this method is called everytime we define something with an ID,
         // may as well mark the ID as defined here
         fDefined.add(id);
-        List attributes = new ArrayList();
+        List<String> attributes = new ArrayList<String>();
         attributes.add("id");
         attributes.add(id);
         attributes.add(XMLSymbols.fIDSymbol);
@@ -2050,13 +2050,13 @@ public class PSVIWriter implements XMLComponent, XMLDocumentFilter {
         return new QName(prefix, localpart, rawname, uri);
     }
 
-    private XMLAttributes createAttributes(List atts) {
+    private XMLAttributes createAttributes(List<String> atts) {
         XMLAttributes attributes = new XMLAttributesImpl();
         if (atts != null) {
             for (int i = 0; i < atts.size(); i += 3) {
-                String rawname = (String)atts.get(i);
-                String value = (String)atts.get(i + 1);
-                String type = (String)atts.get(i + 2);
+                String rawname = atts.get(i);
+                String value = atts.get(i + 1);
+                String type = atts.get(i + 2);
                 attributes.addAttribute(createQName(rawname), type, value);
             }
         }

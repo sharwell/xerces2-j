@@ -32,18 +32,18 @@ public class SpecialCaseErrorHandler implements ErrorHandler {
     
     public static final boolean DEBUG = false;
     
-    private HashMap errors;
+    private HashMap<String, Boolean> errors;
     
     public SpecialCaseErrorHandler(String[] specialCases) {
-        errors = new HashMap();
+        errors = new HashMap<String, Boolean>();
         for (int i = 0; i < specialCases.length; ++i) {
             errors.put(specialCases[i], Boolean.FALSE);
         }
     }
     
     public void reset() {
-        for (Iterator iter = errors.keySet().iterator(); iter.hasNext();) {
-            String error = (String) iter.next();
+        for (Iterator<String> iter = errors.keySet().iterator(); iter.hasNext();) {
+            String error = iter.next();
             errors.put(error, Boolean.FALSE);
         }
     }
@@ -58,8 +58,8 @@ public class SpecialCaseErrorHandler implements ErrorHandler {
         if (DEBUG) {
             System.err.println(arg0.getMessage());
         }
-        for (Iterator iter = errors.keySet().iterator(); iter.hasNext();) {
-            String error = (String) iter.next();
+        for (Iterator<String> iter = errors.keySet().iterator(); iter.hasNext();) {
+            String error = iter.next();
             if (arg0.getMessage().startsWith(error)) {
                 errors.put(error, Boolean.TRUE);
             }
@@ -71,6 +71,6 @@ public class SpecialCaseErrorHandler implements ErrorHandler {
     }
     
     public boolean specialCaseFound(String key) {
-        return ((Boolean) errors.get(key)).booleanValue();
+        return errors.get(key);
     }
 }

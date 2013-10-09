@@ -85,7 +85,7 @@ public class AugmentationsImpl implements Augmentations {
      * Returns an enumeration of the keys in the Augmentations structure
      *
      */
-    public Enumeration keys (){
+    public Enumeration<String> keys (){
         return fAugmentationsContainer.keys();
     }
 
@@ -101,10 +101,10 @@ public class AugmentationsImpl implements Augmentations {
     }
 
     static abstract class AugmentationsItemsContainer {
-        abstract public Object putItem(Object key, Object item);
-        abstract public Object getItem(Object key);
-        abstract public Object removeItem(Object key);
-        abstract public Enumeration keys();
+        abstract public Object putItem(String key, Object item);
+        abstract public Object getItem(String key);
+        abstract public Object removeItem(String key);
+        abstract public Enumeration<String> keys();
         abstract public void clear();
         abstract public boolean isFull();
         abstract public AugmentationsItemsContainer expand();
@@ -120,7 +120,7 @@ public class AugmentationsImpl implements Augmentations {
             return new SmallContainerKeyEnumeration();
         }
 
-        public Object getItem(Object key) {
+        public Object getItem(String key) {
             for (int i = 0; i < fNumEntries*2; i = i + 2) {
                 if (fAugmentations[i].equals(key)) {
                     return fAugmentations[i+1];
@@ -130,7 +130,7 @@ public class AugmentationsImpl implements Augmentations {
             return null;
         }
 
-        public Object putItem(Object key, Object item) {
+        public Object putItem(String key, Object item) {
             for (int i = 0; i < fNumEntries*2; i = i + 2) {
                 if (fAugmentations[i].equals(key)) {
                     Object oldValue = fAugmentations[i+1];
@@ -148,7 +148,7 @@ public class AugmentationsImpl implements Augmentations {
         }
 
 
-        public Object removeItem(Object key) {
+        public Object removeItem(String key) {
             for (int i = 0; i < fNumEntries*2; i = i + 2) {
                 if (fAugmentations[i].equals(key)) {
                     Object oldValue = fAugmentations[i+1];
@@ -186,7 +186,7 @@ public class AugmentationsImpl implements Augmentations {
             LargeContainer expandedContainer = new LargeContainer();
 
             for (int i = 0; i < fNumEntries*2; i = i + 2) {
-                expandedContainer.putItem(fAugmentations[i],
+                expandedContainer.putItem((String)fAugmentations[i],
                                           fAugmentations[i+1]);
             }
 
@@ -242,21 +242,21 @@ public class AugmentationsImpl implements Augmentations {
 
     final static class LargeContainer extends AugmentationsItemsContainer {
         
-        private final HashMap fAugmentations = new HashMap();
+        private final HashMap<String, Object> fAugmentations = new HashMap<String, Object>();
 
-        public Object getItem(Object key) {
+        public Object getItem(String key) {
             return fAugmentations.get(key);
         }
 
-        public Object putItem(Object key, Object item) {
+        public Object putItem(String key, Object item) {
             return fAugmentations.put(key, item);
         }
 
-        public Object removeItem(Object key) {
+        public Object removeItem(String key) {
             return fAugmentations.remove(key);
         }
 
-        public Enumeration keys() {
+        public Enumeration<String> keys() {
             return Collections.enumeration(fAugmentations.keySet());
         }
 

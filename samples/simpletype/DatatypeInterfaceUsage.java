@@ -128,7 +128,7 @@ public class DatatypeInterfaceUsage extends DefaultHandler {
                     
                 case XSConstants.LIST_DT:
                 case XSConstants.LISTOFUNION_DT:
-                    ObjectList l = (ObjectList)value;
+                    ObjectList<?> l = (ObjectList<?>)value;
                     System.out.println(l.getLength());
                     break;
                     

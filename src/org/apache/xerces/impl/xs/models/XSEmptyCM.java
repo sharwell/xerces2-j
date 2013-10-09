@@ -29,6 +29,7 @@ import org.apache.xerces.impl.xs.XSElementDeclHelper;
 import org.apache.xerces.impl.xs.XSOpenContentDecl;
 import org.apache.xerces.impl.xs.XSWildcardDecl;
 import org.apache.xerces.xni.QName;
+import org.apache.xerces.xs.XSObject;
 
 /**
  * XSEmptyCM is a derivative of the abstract content model base class that
@@ -155,7 +156,7 @@ public class XSEmptyCM implements XSCMValidator, XS11CMRestriction.XS11CM {
      * @return       a Vector whose entries are instances of
      *               either XSWildcardDecl or XSElementDecl.
      */
-    public Vector whatCanGoHere(int[] state) {
+    public Vector<XSObject> whatCanGoHere(int[] state) {
         return EMPTY;
     }
     

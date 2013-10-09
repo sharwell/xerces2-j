@@ -1431,7 +1431,7 @@ class  XSDComplexTypeTraverser extends XSDAbstractParticleTraverser {
                 for (int facetIdx = 0; facetIdx < facets.getLength(); facetIdx++) {
                     XSMultiValueFacet facet = (XSMultiValueFacet) facets.item(facetIdx);
                     if (facet.getFacetKind() == XSSimpleTypeDefinition.FACET_ASSERT) {
-                        Vector assertionFacets = facet.getAsserts();
+                        Vector<XSAssertImpl> assertionFacets = facet.getAsserts();
                         for (int j = 0; j < assertionFacets.size(); j++) {
                            XSAssertImpl assertImpl = (XSAssertImpl)assertionFacets.get(j);
                            addAssertion(assertImpl);

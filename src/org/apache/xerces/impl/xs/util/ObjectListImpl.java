@@ -29,7 +29,7 @@ import org.apache.xerces.xs.datatypes.ObjectList;
  *
  * @version $Id$
  */
-public final class ObjectListImpl extends AbstractList implements ObjectList {
+public final class ObjectListImpl<E> extends AbstractList<E> implements ObjectList<E> {
 
     /**
      * An immutable empty list.
@@ -37,12 +37,12 @@ public final class ObjectListImpl extends AbstractList implements ObjectList {
     public static final ObjectListImpl EMPTY_LIST = new ObjectListImpl(new Object[0], 0);
     
     // The array to hold all data
-    private final Object[] fArray;
+    private final E[] fArray;
     
     // Number of elements in this list
     private final int fLength;
 
-    public ObjectListImpl(Object[] array, int length) {
+    public ObjectListImpl(E[] array, int length) {
         fArray = array;
         fLength = length;
     }
@@ -67,7 +67,7 @@ public final class ObjectListImpl extends AbstractList implements ObjectList {
         return false;
     }
     
-    public Object item(int index) {
+    public E item(int index) {
         if (index < 0 || index >= fLength) {
             return null;
         }
@@ -77,7 +77,7 @@ public final class ObjectListImpl extends AbstractList implements ObjectList {
     /*
      * List methods
      */
-    public Object get(int index) {
+    public E get(int index) {
         if (index >= 0 && index < fLength) {
             return fArray[index];
         }

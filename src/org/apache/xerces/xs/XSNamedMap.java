@@ -18,6 +18,7 @@
 package org.apache.xerces.xs;
 
 import java.util.Map;
+import javax.xml.namespace.QName;
 
 /**
  * Objects implementing the <code>XSNamedMap</code> interface are used to 
@@ -26,7 +27,7 @@ import java.util.Map;
  * <code>XSObjectList</code>. The <code>XSObject</code>s in 
  * <code>XSNamedMap</code>s are not maintained in any particular order. 
  */
-public interface XSNamedMap extends Map {
+public interface XSNamedMap extends Map<QName, XSObject> {
     /**
      * The number of <code>XSObjects</code> in the <code>XSObjectList</code>. 
      * The range of valid child object indices is 0 to <code>length-1</code> 

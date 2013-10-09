@@ -26,7 +26,7 @@ import java.util.List;
  * 
  * @version $Id$
  */
-public interface ObjectList extends List {
+public interface ObjectList<E> extends List<E> {
     
     /**
      * The number of <code>Object</code>s in the list. The range of 
@@ -54,6 +54,6 @@ public interface ObjectList extends List {
      *   the index specified is not valid - greater than or equal to the
      *   number of items in the list or less than zero. 
      */
-    public Object item(int index);
+    public E item(int index);
     
 }

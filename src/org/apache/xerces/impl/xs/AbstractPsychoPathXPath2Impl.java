@@ -44,10 +44,13 @@ import org.eclipse.wst.xml.xpath2.processor.XPathParserException;
 import org.eclipse.wst.xml.xpath2.processor.ast.XPath;
 import org.eclipse.wst.xml.xpath2.processor.function.FnFunctionLibrary;
 import org.eclipse.wst.xml.xpath2.processor.function.XSCtrLibrary;
+import org.eclipse.wst.xml.xpath2.processor.internal.DynamicContextAdapter;
 import org.eclipse.wst.xml.xpath2.processor.internal.Focus;
+import org.eclipse.wst.xml.xpath2.processor.internal.StaticContextAdapter;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.ElementType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSBoolean;
+import org.eclipse.wst.xml.xpath2.processor.util.DynamicContextBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -60,7 +63,7 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public class AbstractPsychoPathXPath2Impl {
-    
+
     private DynamicContext fXpath2DynamicContext = null;
     private Document fDomDoc = null;
     
@@ -69,7 +72,7 @@ public class AbstractPsychoPathXPath2Impl {
      * Initialize the PsychoPath engine XPath 2.0 dynamic context. This also initializes the XPath engine's static
      * context, since dynamic context is inherited from the static context.
      */
-    public DynamicContext initXPath2DynamicContext(XSModel schema, Document document, Map psychoPathParams) {
+    public DynamicContext initXPath2DynamicContext(XSModel schema, Document document, Map<String, Object> psychoPathParams) {
         
         fXpath2DynamicContext = new DefaultDynamicContext(schema, document);        
         
@@ -79,16 +82,16 @@ public class AbstractPsychoPathXPath2Impl {
         if (isCtaEvaluator != null && isCtaEvaluator.booleanValue()) {
            // check if the call to this method came from CTA evaluator. needs special treatment for handling namespace context.
            String[] namespaceBindingInfo = xpath2NamespaceContext.getNamespaceBindingInfo();
-           List prefixes = getPrefixesXS11CTA(namespaceBindingInfo);
+           List<String> prefixes = getPrefixesXS11CTA(namespaceBindingInfo);
            for (int prfxIdx = 0; prfxIdx < prefixes.size(); prfxIdx++) {
-               String prefix = (String)prefixes.get(prfxIdx);
+               String prefix = prefixes.get(prfxIdx);
                addNamespaceBindingToXPath2DynamicContext(prefix, getURIXS11CTA(prefix, namespaceBindingInfo)); 
            }
         }
         else {
-            Enumeration currPrefixes = xpath2NamespaceContext.getAllPrefixes();
+            Enumeration<String> currPrefixes = xpath2NamespaceContext.getAllPrefixes();
             while (currPrefixes.hasMoreElements()) {
-                String prefix = (String)currPrefixes.nextElement();
+                String prefix = currPrefixes.nextElement();
                 addNamespaceBindingToXPath2DynamicContext(prefix, xpath2NamespaceContext.getURI(prefix));
             }
             addNamespaceBindingToXPath2DynamicContext(XMLConstants.XML_NS_PREFIX, XMLConstants.XML_NS_URI);
@@ -119,14 +122,10 @@ public class AbstractPsychoPathXPath2Impl {
         sc.check(xpathObject);       
         Evaluator xpath2Evaluator = null;
         if (contextNode != null) {            
-            xpath2Evaluator = new DefaultEvaluator(fXpath2DynamicContext, fDomDoc, fDomDoc.getDocumentElement()); // for assertions and CTA, root node of XDM tree is the initial context element           
-            // change focus to the top most element
-            ResultSequence contextNodeResultSet = ResultSequenceFactory.create_new();
-            contextNodeResultSet.add(new ElementType(contextNode, fXpath2DynamicContext.node_position(contextNode)));           
-            fXpath2DynamicContext.set_focus(new Focus(contextNodeResultSet));
+            xpath2Evaluator = new DefaultEvaluator(new StaticContextAdapter(fXpath2DynamicContext), new DynamicContextAdapter(fXpath2DynamicContext), new Object[] { contextNode }); // for assertions and CTA, root node of XDM tree is the initial context element           
         }
         else {           
-           xpath2Evaluator = new DefaultEvaluator(fXpath2DynamicContext, null);
+           xpath2Evaluator = new DefaultEvaluator(new StaticContextAdapter(fXpath2DynamicContext), new DynamicContextAdapter(fXpath2DynamicContext), new Object[] { });
         }
         
         ResultSequence resultSeq = xpath2Evaluator.evaluate(xpathObject);
@@ -179,8 +178,8 @@ public class AbstractPsychoPathXPath2Impl {
     /*
      * Get in-scope namespace prefixes. special handling for CTA.
      */
-    private List getPrefixesXS11CTA(String[] namespaceBindingInfo) {
-        List prefixes = new ArrayList();
+    private List<String> getPrefixesXS11CTA(String[] namespaceBindingInfo) {
+        List<String> prefixes = new ArrayList<String>();
         for (int prefixIdx = 0; prefixIdx < namespaceBindingInfo.length && namespaceBindingInfo[prefixIdx] != null; prefixIdx += 2) {
             prefixes.add(namespaceBindingInfo[prefixIdx]);
         } 

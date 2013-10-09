@@ -1042,7 +1042,7 @@ public class RegularExpression implements java.io.Serializable {
      */
     private int match(Context con, Op op, int offset, int dx, int opts) {
         final ExpressionTarget target = con.target;
-        final Stack opStack = new Stack();
+        final Stack<Op> opStack = new Stack<Op>();
         final IntStack dataStack = new IntStack();
         final boolean isSetIgnoreCase = isSet(opts, IGNORE_CASE);
         int retValue = -1;
@@ -1321,7 +1321,7 @@ public class RegularExpression implements java.io.Serializable {
                     return retValue;
                 }
 
-                op = (Op) opStack.pop();
+                op = opStack.pop();
                 offset = dataStack.pop();
 
                 switch (op.type) {

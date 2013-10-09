@@ -25,6 +25,7 @@ import org.apache.xerces.impl.xs.XSConstraints;
 import org.apache.xerces.impl.xs.XSElementDecl;
 import org.apache.xerces.impl.xs.XSElementDeclHelper;
 import org.apache.xerces.xni.QName;
+import org.apache.xerces.xs.XSObject;
 
 /**
  * Note: State of the content model is stored in the validator
@@ -90,9 +91,9 @@ public interface XSCMValidator {
      * 
      * @param state  the current state
      * @return       a Vector whose entries are instances of
-     *               either XSWildcardDecl or XSElementDecl.
+     *               either {@link XSWildcardDecl} or {@link XSElementDecl}.
      */
-    public Vector whatCanGoHere(int[] state);
+    public Vector<XSObject> whatCanGoHere(int[] state);
     
     /**
      * <p>Returns an array containing information about the current repeating term

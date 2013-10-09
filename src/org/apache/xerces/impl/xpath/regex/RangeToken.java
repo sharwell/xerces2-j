@@ -560,7 +560,7 @@ final class RangeToken extends Token implements java.io.Serializable {
                         sb.append(escapeCharInCharClass(this.ranges[i]));
                     } else {
                         sb.append(escapeCharInCharClass(this.ranges[i]));
-                        sb.append((char)'-');
+                        sb.append('-');
                         sb.append(escapeCharInCharClass(this.ranges[i+1]));
                     }
                 }

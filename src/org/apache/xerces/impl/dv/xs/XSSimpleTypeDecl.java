@@ -33,6 +33,7 @@ import org.apache.xerces.impl.dv.XSFacets;
 import org.apache.xerces.impl.dv.XSSimpleType;
 import org.apache.xerces.impl.xpath.regex.RegularExpression;
 import org.apache.xerces.impl.xs.SchemaSymbols;
+import org.apache.xerces.impl.xs.assertion.XSAssertImpl;
 import org.apache.xerces.impl.xs.util.ObjectListImpl;
 import org.apache.xerces.impl.xs.util.ShortListImpl;
 import org.apache.xerces.impl.xs.util.StringListImpl;
@@ -51,6 +52,7 @@ import org.apache.xerces.xs.XSObject;
 import org.apache.xerces.xs.XSObjectList;
 import org.apache.xerces.xs.XSSimpleTypeDefinition;
 import org.apache.xerces.xs.XSTypeDefinition;
+import org.apache.xerces.xs.XSValue;
 import org.apache.xerces.xs.datatypes.ObjectList;
 import org.w3c.dom.TypeInfo;
 
@@ -250,7 +252,7 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
     };
 
     protected static TypeValidator[] getGDVs() {
-        return (TypeValidator[])gDVs.clone();
+        return gDVs.clone();
     }
     private TypeValidator[] fDVs = gDVs;
     protected void setDVs(TypeValidator[] dvs) {
@@ -291,12 +293,12 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
     private int fFractionDigits = -1;
     private int fMaxScale; //for XML Schema 1.1     
     private int fMinScale; //for XML Schema 1.1
-    private Vector fPattern;
-    private Vector fPatternStr;
+    private Vector<RegularExpression> fPattern;
+    private Vector<String> fPatternStr;
     private ValidatedInfo[] fEnumeration;
     private int fEnumerationSize;
     private ShortList fEnumerationTypeList;
-    private ObjectList fEnumerationItemTypeList;
+    private ObjectList<ShortList> fEnumerationItemTypeList;
     private StringList fLexicalPattern;
     private StringList fLexicalEnumeration;
     private ObjectList fActualEnumeration;
@@ -304,7 +306,7 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
     private Object fMaxExclusive;
     private Object fMinExclusive;
     private Object fMinInclusive;
-    private Vector fAssertion; // added for XML Schema 1.1, assertions
+    private Vector<XSAssertImpl> fAssertion; // added for XML Schema 1.1, assertions
 
     // annotations for constraining facets
     public XSAnnotation lengthAnnotation;
@@ -896,9 +898,9 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
                     reportError("InvalidRegex", new Object[]{facets.pattern, e.getLocalizedMessage()});
                 }
                 if (regex != null) {
-                    fPattern = new Vector();
+                    fPattern = new Vector<RegularExpression>();
                     fPattern.addElement(regex);
-                    fPatternStr = new Vector();
+                    fPatternStr = new Vector<String>();
                     fPatternStr.addElement(facets.pattern);
                     fFacetsDefined |= FACET_PATTERN;
                     if ((fixedFacet & FACET_PATTERN) != 0)
@@ -924,18 +926,18 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
             if ((allowedFacet & FACET_ENUMERATION) == 0) {
                 reportError("cos-applicable-facets", new Object[]{"enumeration", fTypeName});
             } else {
-                Vector enumVals = facets.enumeration;
+                Vector<String> enumVals = facets.enumeration;
                 int size = enumVals.size();
                 fEnumeration = new ValidatedInfo[size];
-                Vector enumNSDecls = facets.enumNSDecls;
+                Vector<NamespaceContext> enumNSDecls = facets.enumNSDecls;
                 ValidationContextImpl ctx = new ValidationContextImpl(context);
                 enumerationAnnotations = facets.enumAnnotations;
                 fEnumerationSize = 0;
                 for (int i = 0; i < size; i++) {
                     if (enumNSDecls != null)
-                        ctx.setNSContext((NamespaceContext)enumNSDecls.elementAt(i));
+                        ctx.setNSContext(enumNSDecls.elementAt(i));
                     try {
-                        ValidatedInfo info = getActualEnumValue((String)enumVals.elementAt(i), ctx, null);
+                        ValidatedInfo info = getActualEnumValue(enumVals.elementAt(i), ctx, null);
                         // check 4.3.5.c0 must: enumeration values from the value space of base
                         fEnumeration[fEnumerationSize++] = info;
                     } catch (InvalidDatatypeValueException ide) {
@@ -950,8 +952,8 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
 
         // assertion. added for XML Schema 1.1
         if ((presentFacet & FACET_ASSERT) != 0) {
-            fAssertion = new Vector();
-            Vector asserts = facets.assertFacets;
+            fAssertion = new Vector<XSAssertImpl>();
+            Vector<XSAssertImpl> asserts = facets.assertFacets;
             for (int i = 0; i < asserts.size(); i++) {
                 fAssertion.addElement(asserts.elementAt(i));
             }
@@ -2037,7 +2039,7 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
         if ( (fFacetsDefined & FACET_PATTERN ) != 0 ) {
             RegularExpression regex;
             for (int idx = fPattern.size()-1; idx >= 0; idx--) {
-                regex = (RegularExpression)fPattern.elementAt(idx);
+                regex = fPattern.elementAt(idx);
                 if (!regex.matches(nvalue)){
                     throw new InvalidDatatypeValueException("cvc-pattern-valid",
                             new Object[]{content,
@@ -2520,12 +2522,12 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
      * A list of enumeration type values (as a list of ShortList objects) if it exists, otherwise returns
      * null
      */
-    public ObjectList getEnumerationItemTypeList() {
+    public ObjectList<ShortList> getEnumerationItemTypeList() {
         if (fEnumerationItemTypeList == null) {
             if (fEnumeration == null) {
                 return null;
             }
-            fEnumerationItemTypeList = new AbstractObjectList() {
+            fEnumerationItemTypeList = new AbstractObjectList<ShortList>() {
                 public int getLength() {
                     return (fEnumeration != null) ? fEnumerationSize : 0;
                 }
@@ -2537,7 +2539,7 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
                             return true;
                     return false;
                 }
-                public Object item(int index) {
+                public ShortList item(int index) {
                     if (index < 0 || index >= getLength()) {
                         return null;
                     }
@@ -2593,7 +2595,7 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
                 strs = new String[size];
             }
             for (int i = 0; i < size; i++)
-                strs[i] = (String)fPatternStr.elementAt(i);
+                strs[i] = fPatternStr.elementAt(i);
             fLexicalPattern = new StringListImpl(strs, strs.length);
         }
         return fLexicalPattern;
@@ -3708,10 +3710,10 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
         final short kind;
         final XSObjectList annotations;
         final StringList svalues;
-        final ObjectList avalues;
-        final Vector asserts;
+        final ObjectList<XSValue> avalues;
+        final Vector<XSAssertImpl> asserts;
 
-        public XSMVFacetImpl(short kind, StringList svalues, ObjectList avalues, XSObjectList annotations) {
+        public XSMVFacetImpl(short kind, StringList svalues, ObjectList<XSValue> avalues, XSObjectList annotations) {
             this.kind = kind;
             this.svalues = svalues;
             this.avalues = avalues;
@@ -3721,7 +3723,7 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
         /*
          * overloaded constructor. added to support assertions.
          */
-        public XSMVFacetImpl(short kind, Vector asserts) {
+        public XSMVFacetImpl(short kind, Vector<XSAssertImpl> asserts) {
             this.kind = kind;
             this.asserts = asserts;
             this.svalues = null;
@@ -3750,7 +3752,7 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
             return svalues;
         }
 
-        public ObjectList getEnumerationValues() {
+        public ObjectList<XSValue> getEnumerationValues() {
             return avalues;
         }
         
@@ -3783,13 +3785,13 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
             return XSConstants.MULTIVALUE_FACET;
         }
         
-        public Vector getAsserts() {
+        public Vector<XSAssertImpl> getAsserts() {
             return asserts;
         }
     }
     
-    private static abstract class AbstractObjectList extends AbstractList implements ObjectList {
-        public Object get(int index) {
+    private static abstract class AbstractObjectList<E> extends AbstractList<E> implements ObjectList<E> {
+        public E get(int index) {
             if (index >= 0 && index < getLength()) {
                 return item(index);
             }

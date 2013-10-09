@@ -156,7 +156,7 @@ public abstract class BaseMarkupSerializer
      * Vector holding comments and PIs that come before the root
      * element (even after it), see {@link #serializePreRoot}.
      */
-    private Vector          _preRoot;
+    private Vector<String>  _preRoot;
 
 
     /**
@@ -179,7 +179,7 @@ public abstract class BaseMarkupSerializer
      * Accumulated here prior to starting an element and placing this
      * list in the element state.
      */
-    protected Hashtable     _prefixes;
+    protected Hashtable<String, String>     _prefixes;
 
 
     /**
@@ -615,7 +615,7 @@ public abstract class BaseMarkupSerializer
         // the PI directly but place it in the pre-root vector.
         if ( isDocumentState() ) {
             if ( _preRoot == null )
-                _preRoot = new Vector();
+                _preRoot = new Vector<String>();
             _preRoot.addElement( fStrBuffer.toString() );
         } else {
             _printer.indent();
@@ -662,7 +662,7 @@ public abstract class BaseMarkupSerializer
         // the comment directly but place it in the pre-root vector.
         if ( isDocumentState() ) {
             if ( _preRoot == null )
-                _preRoot = new Vector();
+                _preRoot = new Vector<String>();
             _preRoot.addElement( fStrBuffer.toString() );
         } else {
             // Indent this element on a new line if the first
@@ -802,7 +802,7 @@ public abstract class BaseMarkupSerializer
         throws SAXException
     {
         if ( _prefixes == null )
-            _prefixes = new Hashtable();
+            _prefixes = new Hashtable<String, String>();
         _prefixes.put( uri, prefix == null ? "" : prefix );
     }
 
@@ -1194,12 +1194,12 @@ public abstract class BaseMarkupSerializer
                 }
                 // DOM Level 1 -- does implementation have methods?
                 catch (NoSuchMethodError nsme) {
-                    Class docTypeClass = docType.getClass();
+                    Class<? extends DocumentType> docTypeClass = docType.getClass();
 
                     String docTypePublicId = null;
                     String docTypeSystemId = null;
                     try {
-                        java.lang.reflect.Method getPublicId = docTypeClass.getMethod("getPublicId", (Class[]) null);
+                        java.lang.reflect.Method getPublicId = docTypeClass.getMethod("getPublicId");
                         if (getPublicId.getReturnType().equals(String.class)) {
                             docTypePublicId = (String)getPublicId.invoke(docType, (Object[]) null);
                         }
@@ -1208,7 +1208,7 @@ public abstract class BaseMarkupSerializer
                         // ignore
                     }
                     try {
-                        java.lang.reflect.Method getSystemId = docTypeClass.getMethod("getSystemId", (Class[]) null);
+                        java.lang.reflect.Method getSystemId = docTypeClass.getMethod("getSystemId");
                         if (getSystemId.getReturnType().equals(String.class)) {
                             docTypeSystemId = (String)getSystemId.invoke(docType, (Object[]) null);
                         }
@@ -1381,7 +1381,7 @@ public abstract class BaseMarkupSerializer
 
         if ( _preRoot != null ) {
             for ( i = 0 ; i < _preRoot.size() ; ++i ) {
-                printText( (String) _preRoot.elementAt( i ), true, true );
+                printText( _preRoot.elementAt( i ), true, true );
                 if ( _indenting )
                 _printer.breakLine();
             }
@@ -1792,7 +1792,7 @@ public abstract class BaseMarkupSerializer
         String    prefix;
 
         if ( _prefixes != null ) {
-            prefix = (String) _prefixes.get( namespaceURI );
+            prefix = _prefixes.get( namespaceURI );
             if ( prefix != null )
                 return prefix;
         }
@@ -1801,7 +1801,7 @@ public abstract class BaseMarkupSerializer
         }
         for ( int i = _elementStateCount ; i > 0 ; --i ) {
             if ( _elementStates[ i ].prefixes != null ) {
-                prefix = (String) _elementStates[ i ].prefixes.get( namespaceURI );
+                prefix = _elementStates[ i ].prefixes.get( namespaceURI );
                 if ( prefix != null )
                     return prefix;
             }

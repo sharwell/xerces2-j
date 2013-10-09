@@ -281,7 +281,7 @@ public class XSComplexTypeDecl implements XSComplexTypeDefinition, TypeInfo {
                   (ancestorNS != null && ancestorNS.equals(type.getNamespace())))) &&   // compare with ancestor
                type != SchemaGrammar.fAnySimpleType &&  // reached anySimpleType
                !SchemaGrammar.isAnyType(type)) {        // reached anyType
-            type = (XSTypeDefinition)type.getBaseType();
+            type = type.getBaseType();
         }
 
         return type != SchemaGrammar.fAnySimpleType && !SchemaGrammar.isAnyType(type);

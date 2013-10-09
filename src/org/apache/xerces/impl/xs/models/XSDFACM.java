@@ -36,6 +36,7 @@ import org.apache.xerces.impl.xs.XSOpenContentDecl;
 import org.apache.xerces.impl.xs.XSParticleDecl;
 import org.apache.xerces.impl.xs.XSWildcardDecl;
 import org.apache.xerces.xni.QName;
+import org.apache.xerces.xs.XSObject;
 
 /**
  * DFAContentModel is the implementation of XSCMValidator that does
@@ -1262,7 +1263,7 @@ public class XSDFACM
      * @return       a Vector whose entries are instances of
      *               either XSWildcardDecl or XSElementDecl.
      */
-    public Vector whatCanGoHere(int[] state) {
+    public Vector<XSObject> whatCanGoHere(int[] state) {
         int elemSize = fOpenContent != null ? fNumTotal - 1 : fNumTotal;
 
         int curState = state[0];
@@ -1272,7 +1273,7 @@ public class XSDFACM
                 fCountingStates[curState] : null;
         int count = state[2];
 
-        Vector ret = new Vector();
+        Vector<XSObject> ret = new Vector<XSObject>();
         for (int elemIndex = 0; elemIndex < elemSize; elemIndex++) {
             int nextState = fTransTable[curState][elemIndex];
             if (nextState != -1) {
@@ -1292,7 +1293,7 @@ public class XSDFACM
                         continue;
                     }
                 }
-                ret.addElement(elemIndex < fNumElements ? (Object)fElements[elemIndex] : (Object)fWildcards[elemIndex]);
+                ret.addElement(elemIndex < fNumElements ? fElements[elemIndex] : fWildcards[elemIndex]);
             }  
         }
         return ret;

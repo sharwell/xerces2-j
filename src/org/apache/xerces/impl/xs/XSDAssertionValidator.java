@@ -276,9 +276,9 @@ public class XSDAssertionValidator {
     /*
      * Get assertions from a simpleType.
      */
-    public List getAssertsFromSimpleType(XSSimpleTypeDefinition simpleTypeDef) {
+    public List<XSAssertImpl> getAssertsFromSimpleType(XSSimpleTypeDefinition simpleTypeDef) {
         
-        List simpleTypeAsserts = null;
+        List<XSAssertImpl> simpleTypeAsserts = null;
                    
         XSObjectListImpl facetList = (XSObjectListImpl) simpleTypeDef.getMultiValueFacets();
         if (facetList.getLength() == 0 && simpleTypeDef.getItemType() != null) {
@@ -289,7 +289,7 @@ public class XSDAssertionValidator {
             // special handling for assertions on "simpleType -> union" cases. Adding an assertion here, for determining the NamespaceContext.
             XSAssertImpl assertImpl = getFirstAssertFromUnionMemberTypes(simpleTypeDef.getMemberTypes());
             if (assertImpl != null) {
-                simpleTypeAsserts = new Vector();
+                simpleTypeAsserts = new Vector<XSAssertImpl>();
                 simpleTypeAsserts.add(assertImpl);
             }
         }
@@ -299,7 +299,7 @@ public class XSDAssertionValidator {
             XSMultiValueFacet facet = (XSMultiValueFacet) facetList.item(facetIdx);
             if (facet.getFacetKind() == XSSimpleTypeDefinition.FACET_ASSERT) {
                 if (simpleTypeAsserts == null) {
-                    simpleTypeAsserts = new Vector();   
+                    simpleTypeAsserts = new Vector<XSAssertImpl>();   
                 }                  
                 simpleTypeAsserts.addAll(facet.getAsserts());                  
             }

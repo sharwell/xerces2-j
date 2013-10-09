@@ -720,7 +720,7 @@ public class XSFacetAnnotationsTest extends TestCase {
         XSAttributeDeclaration attr = model.getAttributeDeclaration("attr",
                 "XSFacetTest");
 
-        XSSimpleTypeDefinition st = (XSSimpleTypeDefinition) attr
+        XSSimpleTypeDefinition st = attr
                 .getTypeDefinition();
         // Item 0 is minInclusive
         XSFacet maxLength = (XSFacet) st.getFacets().item(1);

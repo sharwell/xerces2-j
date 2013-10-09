@@ -31,7 +31,7 @@ import org.apache.xerces.xs.XSException;
  *
  * @version $Id$
  */
-public final class ShortListImpl extends AbstractList implements ShortList {
+public final class ShortListImpl extends AbstractList<Short> implements ShortList {
 
     /**
      * An immutable empty list.
@@ -107,9 +107,9 @@ public final class ShortListImpl extends AbstractList implements ShortList {
      * List methods
      */
 
-    public Object get(int index) {
+    public Short get(int index) {
         if (index >= 0 && index < fLength) {
-            return new Short(fArray[index]);
+            return fArray[index];
         }
         throw new IndexOutOfBoundsException("Index: " + index);
     }

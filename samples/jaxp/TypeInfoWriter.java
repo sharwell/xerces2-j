@@ -343,8 +343,8 @@ public class TypeInfoWriter
         
         // variables
         XMLReader parser = null;
-        Vector schemas = null;
-        Vector instances = null;
+        Vector<String> schemas = null;
+        Vector<String> instances = null;
         String schemaLanguage = DEFAULT_SCHEMA_LANGUAGE;
         boolean schemaFullChecking = DEFAULT_SCHEMA_FULL_CHECKING;
         boolean honourAllSchemaLocations = DEFAULT_HONOUR_ALL_SCHEMA_LOCATIONS;
@@ -400,7 +400,7 @@ public class TypeInfoWriter
                 if (arg.equals("-a")) {
                     // process -a: schema documents
                     if (schemas == null) {
-                        schemas = new Vector();
+                        schemas = new Vector<String>();
                     }
                     while (i + 1 < argv.length && !(arg = argv[i + 1]).startsWith("-")) {
                         schemas.add(arg);
@@ -411,7 +411,7 @@ public class TypeInfoWriter
                 if (arg.equals("-i")) {
                     // process -i: instance documents
                     if (instances == null) {
-                        instances = new Vector();
+                        instances = new Vector<String>();
                     }
                     while (i + 1 < argv.length && !(arg = argv[i + 1]).startsWith("-")) {
                         instances.add(arg);

@@ -62,7 +62,7 @@ public abstract class AbstractTestCase extends TestCase {
         try {
             Document doc = fDocumentBuilder.parse(new InputSource(new StringReader(input)));
             DOMImplementation domImpl = doc.getImplementation();
-            assertTrue(domImpl.hasFeature("ElementTraversal", "1.0"));
+            assertTrue(domImpl.hasFeature("Traversal", "2.0"));
             return toElementTraversal(doc.getDocumentElement());
         } 
         catch (SAXException se) {

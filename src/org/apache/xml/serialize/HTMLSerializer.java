@@ -318,12 +318,12 @@ public class HTMLSerializer
                 preserveSpace = true;
 
             if ( addNSAttr ) {
-                Iterator entries = _prefixes.entrySet().iterator();
+                Iterator<Map.Entry<String, String>> entries = _prefixes.entrySet().iterator();
                 while (entries.hasNext()) {
                     _printer.printSpace();
-                    Map.Entry entry = (Map.Entry) entries.next();
-                    value = (String) entry.getKey();
-                    name = (String) entry.getValue();
+                    Map.Entry<String, String> entry = entries.next();
+                    value = entry.getKey();
+                    name = entry.getValue();
                     if ( name.length() == 0 ) {
                         _printer.printText( "xmlns=\"" );
                         printEscaped( value );

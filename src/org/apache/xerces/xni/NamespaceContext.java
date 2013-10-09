@@ -158,7 +158,7 @@ public interface NamespaceContext {
      * that have not been overridden.
 	 * @return Enumeration
 	 */
-    public Enumeration getAllPrefixes();
+    public Enumeration<String> getAllPrefixes();
     
     /**
      * Reset this Namespace support object for reuse.

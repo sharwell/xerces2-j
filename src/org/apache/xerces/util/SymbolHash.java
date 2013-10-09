@@ -187,7 +187,7 @@ public class SymbolHash {
     public SymbolHash makeClone() {
         SymbolHash newTable = new SymbolHash(fTableSize);
         newTable.fNum = fNum;
-        newTable.fHashMultipliers = fHashMultipliers != null ? (int[]) fHashMultipliers.clone() : null;
+        newTable.fHashMultipliers = fHashMultipliers != null ? fHashMultipliers.clone() : null;
         for (int i = 0; i < fTableSize; i++) {
             if (fBuckets[i] != null) {
                 newTable.fBuckets[i] = fBuckets[i].makeClone();

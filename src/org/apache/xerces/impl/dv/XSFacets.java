@@ -19,7 +19,9 @@ package org.apache.xerces.impl.dv;
 
 import java.util.Vector;
 
+import org.apache.xerces.impl.xs.assertion.XSAssertImpl;
 import org.apache.xerces.impl.xs.util.XSObjectListImpl;
+import org.apache.xerces.xni.NamespaceContext;
 import org.apache.xerces.xs.XSAnnotation;
 import org.apache.xerces.xs.XSObjectList;
 
@@ -88,14 +90,14 @@ public class XSFacets {
     /**
      * Vector containing values of Enumeration facet, as String's.
      */
-    public Vector enumeration;
+    public Vector<String> enumeration;
 
     /**
      * An array parallel to "Vector enumeration". It contains namespace context
      * of each enumeration value. Elements of this vector are NamespaceContext
      * objects.
      */
-    public Vector enumNSDecls;
+    public Vector<NamespaceContext> enumNSDecls;
 
     /**
      * value of maxInclusive facet.
@@ -120,7 +122,7 @@ public class XSFacets {
     /*
      * Vector containing reference to the assert facets. introduced in XML Schema 1.1
      */
-    public Vector assertFacets;
+    public Vector<XSAssertImpl> assertFacets;
    
     public XSAnnotation lengthAnnotation;
     public XSAnnotation minLengthAnnotation;

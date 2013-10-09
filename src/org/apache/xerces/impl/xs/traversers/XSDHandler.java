@@ -266,23 +266,23 @@ public class XSDHandler {
     // By asking the node for its ownerDocument and looking in
     // XSDocumentInfoRegistry we can easily get the corresponding
     // XSDocumentInfo object.
-    private Hashtable fUnparsedAttributeRegistry = new Hashtable();
-    private Hashtable fUnparsedAttributeGroupRegistry = new Hashtable();
-    private Hashtable fUnparsedElementRegistry = new Hashtable();
-    private Hashtable fUnparsedGroupRegistry = new Hashtable();
-    private Hashtable fUnparsedIdentityConstraintRegistry = new Hashtable();
-    private Hashtable fUnparsedNotationRegistry = new Hashtable();
-    private Hashtable fUnparsedTypeRegistry = new Hashtable();
+    private Hashtable<String, Element> fUnparsedAttributeRegistry = new Hashtable<String, Element>();
+    private Hashtable<String, Element> fUnparsedAttributeGroupRegistry = new Hashtable<String, Element>();
+    private Hashtable<String, Element> fUnparsedElementRegistry = new Hashtable<String, Element>();
+    private Hashtable<String, Element> fUnparsedGroupRegistry = new Hashtable<String, Element>();
+    private Hashtable<String, Element> fUnparsedIdentityConstraintRegistry = new Hashtable<String, Element>();
+    private Hashtable<String, Element> fUnparsedNotationRegistry = new Hashtable<String, Element>();
+    private Hashtable<String, Element> fUnparsedTypeRegistry = new Hashtable<String, Element>();
     // Compensation for the above hashtables to locate XSDocumentInfo, 
     // Since we may take Schema Element directly, so can not get the
     // corresponding XSDocumentInfo object just using above hashtables.
-    private Hashtable fUnparsedAttributeRegistrySub = new Hashtable();
-    private Hashtable fUnparsedAttributeGroupRegistrySub = new Hashtable();
-    private Hashtable fUnparsedElementRegistrySub = new Hashtable();
-    private Hashtable fUnparsedGroupRegistrySub = new Hashtable();
-    private Hashtable fUnparsedIdentityConstraintRegistrySub = new Hashtable();
-    private Hashtable fUnparsedNotationRegistrySub = new Hashtable();
-    private Hashtable fUnparsedTypeRegistrySub = new Hashtable();
+    private Hashtable<String, XSDocumentInfo> fUnparsedAttributeRegistrySub = new Hashtable<String, XSDocumentInfo>();
+    private Hashtable<String, XSDocumentInfo> fUnparsedAttributeGroupRegistrySub = new Hashtable<String, XSDocumentInfo>();
+    private Hashtable<String, XSDocumentInfo> fUnparsedElementRegistrySub = new Hashtable<String, XSDocumentInfo>();
+    private Hashtable<String, XSDocumentInfo> fUnparsedGroupRegistrySub = new Hashtable<String, XSDocumentInfo>();
+    private Hashtable<String, XSDocumentInfo> fUnparsedIdentityConstraintRegistrySub = new Hashtable<String, XSDocumentInfo>();
+    private Hashtable<String, XSDocumentInfo> fUnparsedNotationRegistrySub = new Hashtable<String, XSDocumentInfo>();
+    private Hashtable<String, XSDocumentInfo> fUnparsedTypeRegistrySub = new Hashtable<String, XSDocumentInfo>();
 
     // Stores XSDocumentInfo (keyed by component name), to check for duplicate
     // components declared within the same xsd document
@@ -1941,32 +1941,32 @@ public class XSDHandler {
         // the component is not parsed, try to find a DOM element for it
         switch (declType) {
         case ATTRIBUTE_TYPE :
-            decl = (Element)fUnparsedAttributeRegistry.get(declKey);
-            declDoc = (XSDocumentInfo)fUnparsedAttributeRegistrySub.get(declKey);
+            decl = fUnparsedAttributeRegistry.get(declKey);
+            declDoc = fUnparsedAttributeRegistrySub.get(declKey);
             break;
         case ATTRIBUTEGROUP_TYPE :
-            decl = (Element)fUnparsedAttributeGroupRegistry.get(declKey);
-            declDoc = (XSDocumentInfo)fUnparsedAttributeGroupRegistrySub.get(declKey);
+            decl = fUnparsedAttributeGroupRegistry.get(declKey);
+            declDoc = fUnparsedAttributeGroupRegistrySub.get(declKey);
             break;
         case ELEMENT_TYPE :
-            decl = (Element)fUnparsedElementRegistry.get(declKey);
+            decl = fUnparsedElementRegistry.get(declKey);
             declDoc = (XSDocumentInfo)fUnparsedElementRegistrySub.get(declKey);
             break;
         case GROUP_TYPE :
-            decl = (Element)fUnparsedGroupRegistry.get(declKey);
-            declDoc = (XSDocumentInfo)fUnparsedGroupRegistrySub.get(declKey);
+            decl = fUnparsedGroupRegistry.get(declKey);
+            declDoc = fUnparsedGroupRegistrySub.get(declKey);
             break;
         case IDENTITYCONSTRAINT_TYPE :
-            decl = (Element)fUnparsedIdentityConstraintRegistry.get(declKey);
-            declDoc = (XSDocumentInfo)fUnparsedIdentityConstraintRegistrySub.get(declKey);
+            decl = fUnparsedIdentityConstraintRegistry.get(declKey);
+            declDoc = fUnparsedIdentityConstraintRegistrySub.get(declKey);
             break;
         case NOTATION_TYPE :
-            decl = (Element)fUnparsedNotationRegistry.get(declKey);
-            declDoc = (XSDocumentInfo)fUnparsedNotationRegistrySub.get(declKey);
+            decl = fUnparsedNotationRegistry.get(declKey);
+            declDoc = fUnparsedNotationRegistrySub.get(declKey);
             break;
         case TYPEDECL_TYPE :
-            decl = (Element)fUnparsedTypeRegistry.get(declKey);
-            declDoc = (XSDocumentInfo)fUnparsedTypeRegistrySub.get(declKey);
+            decl = fUnparsedTypeRegistry.get(declKey);
+            declDoc = fUnparsedTypeRegistrySub.get(declKey);
             break;
         default:
             reportSchemaError("Internal-Error", new Object [] {"XSDHandler asked to locate component of type " + declType + "; it does not recognize this type!"}, elmNode);
@@ -4087,9 +4087,9 @@ public class XSDHandler {
      * or because we've found the thing we're redefining.
      */
     void checkForDuplicateNames(String qName, int declType,
-            Hashtable registry, Hashtable registry_sub, Element currComp,
+            Hashtable<String, Element> registry, Hashtable<String, XSDocumentInfo> registry_sub, Element currComp,
             XSDocumentInfo currSchema) {
-        Object objElem = null;
+        Element objElem = null;
         // REVISIT:  when we add derivation checking, we'll have to make
         // sure that ID constraint collisions don't necessarily result in error messages.
         if ((objElem = registry.get(qName)) == null) {
@@ -4103,8 +4103,8 @@ public class XSDHandler {
             registry_sub.put(qName, currSchema);
         }
         else {
-            Element collidingElem = (Element)objElem;
-            XSDocumentInfo collidingElemSchema = (XSDocumentInfo)registry_sub.get(qName);
+            Element collidingElem = objElem;
+            XSDocumentInfo collidingElemSchema = registry_sub.get(qName);
             if (collidingElem == currComp) return;
             Element elemParent = null;
             XSDocumentInfo redefinedSchema = null;

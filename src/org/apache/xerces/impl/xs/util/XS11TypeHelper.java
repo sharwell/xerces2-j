@@ -33,6 +33,7 @@ import org.apache.xerces.impl.xs.SchemaSymbols;
 import org.apache.xerces.impl.xs.XSComplexTypeDecl;
 import org.apache.xerces.impl.xs.XSMessageFormatter;
 import org.apache.xerces.impl.xs.alternative.XSTypeAlternativeImpl;
+import org.apache.xerces.impl.xs.assertion.XSAssertImpl;
 import org.apache.xerces.util.XMLChar;
 import org.apache.xerces.xni.NamespaceContext;
 import org.apache.xerces.xs.XSComplexTypeDefinition;
@@ -197,9 +198,9 @@ public class XS11TypeHelper {
     /*
      * Get assertions list of a simpleType definition.
      */
-    public static Vector getAssertsFromSimpleType(XSSimpleTypeDefinition simplType) {
+    public static Vector<XSAssertImpl> getAssertsFromSimpleType(XSSimpleTypeDefinition simplType) {
 
-        Vector simpleTypeAsserts = new Vector();
+        Vector<XSAssertImpl> simpleTypeAsserts = new Vector<XSAssertImpl>();
         
         XSObjectListImpl facetList = (XSObjectListImpl) simplType.getMultiValueFacets();         
         for (int facetIdx = 0; facetIdx < facetList.getLength(); facetIdx++) {

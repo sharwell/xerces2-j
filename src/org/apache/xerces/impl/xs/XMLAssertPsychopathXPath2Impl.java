@@ -632,10 +632,10 @@ public class XMLAssertPsychopathXPath2Impl extends XMLAssertAdapter {
                     for (int memberTypeFacetIdx = 0; memberTypeFacetIdx < memberTypeFacets.getLength(); memberTypeFacetIdx++) {
                         XSMultiValueFacet facet = (XSMultiValueFacet) memberTypeFacets.item(memberTypeFacetIdx);
                         if (facet.getFacetKind() == XSSimpleTypeDefinition.FACET_ASSERT) {
-                            Vector assertFacets = facet.getAsserts();
+                            Vector<XSAssertImpl> assertFacets = facet.getAsserts();
                             int assertsSucceeded = 0;
-                            for (Iterator iter = assertFacets.iterator(); iter.hasNext(); ) {
-                                XSAssertImpl assertImpl = (XSAssertImpl) iter.next();
+                            for (Iterator<XSAssertImpl> iter = assertFacets.iterator(); iter.hasNext(); ) {
+                                XSAssertImpl assertImpl = iter.next();
                                 try {
                                     setXDMTypedValueOf$value(fCurrentAssertDomNode, value, memType, null, false, fXpath2DynamicContext);
                                     AssertionError assertError = evaluateOneAssertion(element, assertImpl, value, false, false);

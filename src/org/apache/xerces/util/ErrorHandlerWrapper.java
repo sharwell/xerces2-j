@@ -193,12 +193,14 @@ public class ErrorHandlerWrapper
 
     /** Creates a SAXParseException from an XMLParseException. */
     protected static SAXParseException createSAXParseException(XMLParseException exception) {
-        return new SAXParseException(exception.getMessage(),
+        SAXParseException e = new SAXParseException(exception.getMessage(),
                                      exception.getPublicId(),
                                      exception.getExpandedSystemId(),
                                      exception.getLineNumber(),
                                      exception.getColumnNumber(),
                                      exception.getException());
+        e.initCause(exception);
+        return e;
     } // createSAXParseException(XMLParseException):SAXParseException
 
     /** Creates an XMLParseException from a SAXParseException. */

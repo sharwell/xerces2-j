@@ -32,6 +32,7 @@ import org.apache.xerces.impl.xs.XSOpenContentDecl;
 import org.apache.xerces.impl.xs.XSParticleDecl;
 import org.apache.xerces.impl.xs.XSWildcardDecl;
 import org.apache.xerces.xni.QName;
+import org.apache.xerces.xs.XSObject;
 
 /**
  * XSAll11CM implements XSCMValidator and handles &lt;all&gt;.
@@ -318,8 +319,8 @@ public class XS11AllCM implements XSCMValidator, XS11CMRestriction.XS11CM {
      * @return       a Vector whose entries are instances of
      *               either XSWildcardDecl or XSElementDecl.
      */
-    public Vector whatCanGoHere(int[] state) {
-        Vector ret = new Vector();
+    public Vector<XSObject> whatCanGoHere(int[] state) {
+        Vector<XSObject> ret = new Vector<XSObject>();
 
         // handle element declarations
         for (int i = 1; i < fNumElements; i++) {

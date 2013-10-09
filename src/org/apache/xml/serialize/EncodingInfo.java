@@ -217,12 +217,12 @@ public class EncodingInfo {
         // Attempt to get methods for Charset and CharsetEncoder on class initialization.
         static {
             try {
-                Class charsetClass = Class.forName("java.nio.charset.Charset");
-                Class charsetEncoderClass = Class.forName("java.nio.charset.CharsetEncoder");
-                fgCharsetForNameMethod = charsetClass.getMethod("forName", new Class [] {String.class});
-                fgCharsetCanEncodeMethod = charsetClass.getMethod("canEncode", new Class [] {});
-                fgCharsetNewEncoderMethod = charsetClass.getMethod("newEncoder", new Class [] {});
-                fgCharsetEncoderCanEncodeMethod = charsetEncoderClass.getMethod("canEncode", new Class [] {Character.TYPE});
+                Class<?> charsetClass = Class.forName("java.nio.charset.Charset");
+                Class<?> charsetEncoderClass = Class.forName("java.nio.charset.CharsetEncoder");
+                fgCharsetForNameMethod = charsetClass.getMethod("forName", String.class);
+                fgCharsetCanEncodeMethod = charsetClass.getMethod("canEncode");
+                fgCharsetNewEncoderMethod = charsetClass.getMethod("newEncoder");
+                fgCharsetEncoderCanEncodeMethod = charsetEncoderClass.getMethod("canEncode", Character.TYPE);
                 fgNIOCharsetAvailable = true;
             }
             // ClassNotFoundException, NoSuchMethodException or SecurityException
@@ -256,9 +256,9 @@ public class EncodingInfo {
         // Attempt to get methods for char to byte converter on class initialization.
         static {
             try {
-                Class clazz = Class.forName("sun.io.CharToByteConverter");
-                fgGetConverterMethod = clazz.getMethod("getConverter", new Class [] {String.class});
-                fgCanConvertMethod = clazz.getMethod("canConvert", new Class [] {Character.TYPE});
+                Class<?> clazz = Class.forName("sun.io.CharToByteConverter");
+                fgGetConverterMethod = clazz.getMethod("getConverter", String.class);
+                fgCanConvertMethod = clazz.getMethod("canConvert", Character.TYPE);
                 fgConvertersAvailable = true;
             }
             // ClassNotFoundException, NoSuchMethodException or SecurityException
