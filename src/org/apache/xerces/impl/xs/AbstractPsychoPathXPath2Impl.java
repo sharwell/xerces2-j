@@ -33,10 +33,8 @@ import org.apache.xerces.xs.XSModel;
 import org.eclipse.wst.xml.xpath2.processor.DefaultDynamicContext;
 import org.eclipse.wst.xml.xpath2.processor.DefaultEvaluator;
 import org.eclipse.wst.xml.xpath2.processor.DynamicContext;
-import org.eclipse.wst.xml.xpath2.processor.Evaluator;
 import org.eclipse.wst.xml.xpath2.processor.JFlexCupParser;
 import org.eclipse.wst.xml.xpath2.processor.ResultSequence;
-import org.eclipse.wst.xml.xpath2.processor.ResultSequenceFactory;
 import org.eclipse.wst.xml.xpath2.processor.StaticChecker;
 import org.eclipse.wst.xml.xpath2.processor.StaticNameResolver;
 import org.eclipse.wst.xml.xpath2.processor.XPathParser;
@@ -44,9 +42,9 @@ import org.eclipse.wst.xml.xpath2.processor.XPathParserException;
 import org.eclipse.wst.xml.xpath2.processor.ast.XPath;
 import org.eclipse.wst.xml.xpath2.processor.function.FnFunctionLibrary;
 import org.eclipse.wst.xml.xpath2.processor.function.XSCtrLibrary;
-import org.eclipse.wst.xml.xpath2.processor.internal.Focus;
+import org.eclipse.wst.xml.xpath2.processor.internal.DynamicContextAdapter;
+import org.eclipse.wst.xml.xpath2.processor.internal.StaticContextAdapter;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType;
-import org.eclipse.wst.xml.xpath2.processor.internal.types.ElementType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSBoolean;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -117,16 +115,13 @@ public class AbstractPsychoPathXPath2Impl {
         
         StaticChecker sc = new StaticNameResolver(fXpath2DynamicContext);
         sc.check(xpathObject);       
-        Evaluator xpath2Evaluator = null;
-        if (contextNode != null) {            
-            xpath2Evaluator = new DefaultEvaluator(fXpath2DynamicContext, fDomDoc, fDomDoc.getDocumentElement()); // for assertions and CTA, root node of XDM tree is the initial context element           
-            // change focus to the top most element
-            ResultSequence contextNodeResultSet = ResultSequenceFactory.create_new();
-            contextNodeResultSet.add(new ElementType(contextNode, fXpath2DynamicContext.node_position(contextNode)));           
-            fXpath2DynamicContext.set_focus(new Focus(contextNodeResultSet));
+        DefaultEvaluator xpath2Evaluator = null;
+        if (contextNode != null) {
+            // for assertions and CTA, root node of XDM tree is the initial context element
+            xpath2Evaluator = new DefaultEvaluator(new StaticContextAdapter(fXpath2DynamicContext), new DynamicContextAdapter(fXpath2DynamicContext), new Object[] { contextNode });
         }
         else {           
-           xpath2Evaluator = new DefaultEvaluator(fXpath2DynamicContext, null);
+           xpath2Evaluator = new DefaultEvaluator(fXpath2DynamicContext, fDomDoc);
         }
         
         ResultSequence resultSeq = xpath2Evaluator.evaluate(xpathObject);
