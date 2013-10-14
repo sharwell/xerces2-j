@@ -216,7 +216,7 @@
         <!-- override the version inherited from the parent -->
         <version>2.4.1</version>
         <configuration>
-          <tagNameFormat>@{version}</tagNameFormat>
+          <tagNameFormat>@{version}-xsd11-rax</tagNameFormat>
           <arguments>-Psonatype-oss-release ${release.arguments}</arguments>
         </configuration>
       </plugin>
