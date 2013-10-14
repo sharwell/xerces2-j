@@ -16,6 +16,21 @@
     </license>
   </licenses>
   <developers>
+    <developer>
+      <organization>The Apache Xerces Project</organization>
+      <organizationUrl>http://xerces.apache.org/team.html</organizationUrl>
+      <roles>
+        <role>Initial developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Sam Harwell</name>
+      <organization>Rackspace</organization>
+      <email>sam.harwell@rackspace.com</email>
+      <roles>
+        <role>Standalone release to Maven Central</role>
+      </roles>
+    </developer>
   </developers>
 
   <parent>
@@ -31,6 +46,18 @@
     <bootclasspath.compile>${bootclasspath.java6}</bootclasspath.compile>
     <bootclasspath.testCompile>${bootclasspath.java6}</bootclasspath.testCompile>
   </properties>
+
+  <issueManagement>
+    <system>JIRA</system>
+    <url>https://issues.apache.org/jira/browse/XERCESJ</url>
+  </issueManagement>
+
+  <scm>
+    <url>https://github.com/sharwell/xerces2-j/tree/rackspace-master-xsd11</url>
+    <connection>scm:git:git://github.com/sharwell/xerces2-j.git</connection>
+    <developerConnection>scm:git:git@github.com:sharwell/xerces2-j.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
 
   <dependencies>
     <dependency>
@@ -189,6 +216,10 @@
         <artifactId>maven-release-plugin</artifactId>
         <!-- override the version inherited from the parent -->
         <version>2.4.1</version>
+        <configuration>
+          <tagNameFormat>@{version}</tagNameFormat>
+          <arguments>-Psonatype-oss-release ${release.arguments}</arguments>
+        </configuration>
       </plugin>
 
       <plugin>
