@@ -115,6 +115,9 @@
     <sourceDirectory>src</sourceDirectory>
     <resources>
       <resource>
+        <directory>resources</directory>
+      </resource>
+      <resource>
         <directory>src</directory>
         <includes>
           <include>**/*.properties</include>
