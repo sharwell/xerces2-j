@@ -46,7 +46,7 @@ public interface XSModelGroup extends XSTerm {
 
     /**
      *  A list of [particles] if it exists, otherwise an empty 
-     * <code>XSObjectList</code>. 
+     * {@link XSObjectList}. 
      */
     public XSObjectList getParticles();
 
@@ -57,7 +57,7 @@ public interface XSModelGroup extends XSTerm {
     public XSAnnotation getAnnotation();
 
     /**
-     * A sequence of [annotations] or an empty <code>XSObjectList</code>.
+     * A sequence of [annotations] or an empty {@link XSObjectList}.
      */
     public XSObjectList getAnnotations();    
 }

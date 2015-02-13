@@ -31,7 +31,7 @@ public interface XSModel {
 
     /**
      * A set of namespace schema information information items (of type 
-     * <code>XSNamespaceItem</code>), one for each namespace name which 
+     * {@link XSNamespaceItem}), one for each namespace name which 
      * appears as the target namespace of any schema component in the schema 
      * used for that assessment, and one for absent if any schema component 
      * in the schema had no target namespace. For more information see 
@@ -45,13 +45,13 @@ public interface XSModel {
      * considered top-level.
      * 
      * @param objectType The type of the declaration, i.e. 
-     *   <code>ELEMENT_DECLARATION</code>. Note that 
-     *   <code>XSTypeDefinition.SIMPLE_TYPE</code> and 
-     *   <code>XSTypeDefinition.COMPLEX_TYPE</code> can also be used as the 
-     *   <code>objectType</code> to retrieve only complex types or simple 
+     *   {@link XSConstants#ELEMENT_DECLARATION}. Note that 
+     *   {@link XSTypeDefinition#SIMPLE_TYPE} and 
+     *   {@link XSTypeDefinition#COMPLEX_TYPE} can also be used as the 
+     *   {@code objectType} to retrieve only complex types or simple 
      *   types, instead of all types.
      * @return  A list of top-level definitions of the specified type in 
-     *   <code>objectType</code> or an empty <code>XSNamedMap</code> if no 
+     *   {@code objectType} or an empty {@link XSNamedMap} if no 
      *   such definitions exist. 
      */
     public XSNamedMap getComponents(short objectType);
@@ -63,19 +63,19 @@ public interface XSModel {
      * definitions are also considered top-level.
      * 
      * @param objectType The type of the declaration, i.e. 
-     *   <code>ELEMENT_DECLARATION</code>.
+     *   {@link XSConstants#ELEMENT_DECLARATION}.
      * @param namespace The namespace to which the declaration belongs or 
      *   <code>null</code> (for components with no target namespace).
      * @return  A list of top-level definitions of the specified type in 
      *   <code>objectType</code> and defined in the specified 
-     *   <code>namespace</code> or an empty <code>XSNamedMap</code>. 
+     *   <code>namespace</code> or an empty {@link XSNamedMap}. 
      */
     public XSNamedMap getComponentsByNamespace(short objectType, 
                                                String namespace);
 
     /**
      *  [annotations]: a set of annotations if it exists, otherwise an empty 
-     * <code>XSObjectList</code>. 
+     * {@link XSObjectList}. 
      */
     public XSObjectList getAnnotations();
 
@@ -107,7 +107,7 @@ public interface XSModel {
      * @param name The name of the definition.
      * @param namespace The namespace of the declaration, otherwise 
      *   <code>null</code>.
-     * @return An <code>XSTypeDefinition</code> or <code>null</code> if such 
+     * @return An {@link XSTypeDefinition} or <code>null</code> if such 
      *   a definition does not exist. 
      */
     public XSTypeDefinition getTypeDefinition(String name, 
@@ -159,13 +159,13 @@ public interface XSModel {
     
     /**
      * Convenience method. Returns a list containing the members of the
-     * substitution group for the given <code>XSElementDeclaration</code>
-     * or an empty <code>XSObjectList</code> if the substitution group
+     * substitution group for the given {@link XSElementDeclaration}
+     * or an empty {@link XSObjectList} if the substitution group
      * contains no members.
      * @param head The substitution group head.
      * @return A list containing the members of the substitution group 
-     *  for the given <code>XSElementDeclaration</code> or an empty 
-     *  <code>XSObjectList</code> if the substitution group contains 
+     *  for the given {@link XSElementDeclaration} or an empty 
+     *  {@link XSObjectList} if the substitution group contains 
      *  no members.
      */
     public XSObjectList getSubstitutionGroup(XSElementDeclaration head);

@@ -18,20 +18,20 @@
 package org.apache.xerces.xs;
 
 /**
- * The <code>XSObject</code> is a base object for the XML Schema component 
+ * The {@link XSObject} is a base object for the XML Schema component 
  * model. 
  */
 public interface XSObject {
     /**
-     *  The <code>type</code> of this object, i.e. 
-     * <code>ELEMENT_DECLARATION</code>. 
+     *  The {@code type} of this object, i.e. 
+     * {@link XSConstants#ELEMENT_DECLARATION}.
      */
     public short getType();
 
     /**
-     * The name of type <code>NCName</code>, as defined in XML Namespaces, of 
+     * The name of type {@code NCName}, as defined in XML Namespaces, of 
      * this declaration specified in the <code>{name}</code> property of the 
-     * component or <code>null</code> if the definition of this component 
+     * component or {@code null} if the definition of this component 
      * does not have a <code>{name}</code> property. For anonymous types, 
      * the processor must construct and expose an anonymous type name that 
      * is distinct from the name of every named type and the name of every 
@@ -40,7 +40,7 @@ public interface XSObject {
     public String getName();
 
     /**
-     *  The [target namespace] of this object, or <code>null</code> if it is 
+     *  The [target namespace] of this object, or {@code null} if it is 
      * unspecified. 
      */
     public String getNamespace();
@@ -48,7 +48,7 @@ public interface XSObject {
     /**
      * A namespace schema information item corresponding to the target 
      * namespace of the component, if it is globally declared; or 
-     * <code>null</code> otherwise.
+     * {@code null} otherwise.
      */
     public XSNamespaceItem getNamespaceItem();
 

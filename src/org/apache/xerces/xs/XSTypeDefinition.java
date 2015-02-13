@@ -31,6 +31,9 @@ public interface XSTypeDefinition extends XSObject {
     public static final short SIMPLE_TYPE               = 16;
     /**
      * Return whether this type definition is a simple type or complex type.
+	 *
+	 * @return {@link #COMPLEX_TYPE} if the type is a complex type; otherwise,
+	 * {@link #SIMPLE_TYPE} if the type is a simple type.
      */
     public short getTypeCategory();
 
@@ -45,7 +48,7 @@ public interface XSTypeDefinition extends XSObject {
      * restriction}. For a simple type definition it is a subset of 
      * {extension, list, restriction, union}. 
      * @param restriction  Extension, restriction, list, union constants 
-     *   (defined in <code>XSConstants</code>). 
+     *   (defined in {@link XSConstants}). 
      * @return True if <code>restriction</code> is in the final set, 
      *   otherwise false.
      */
@@ -53,13 +56,13 @@ public interface XSTypeDefinition extends XSObject {
 
     /**
      * For complex types the returned value is a bit combination of the subset 
-     * of {<code>DERIVATION_EXTENSION, DERIVATION_RESTRICTION</code>} 
+     * of {{@link XSConstants#DERIVATION_EXTENSION}, {@link XSConstants#DERIVATION_RESTRICTION}} 
      * corresponding to <code>final</code> set of this type or 
-     * <code>DERIVATION_NONE</code>. For simple types the returned value is 
+     * {@link XSConstants#DERIVATION_NONE}. For simple types the returned value is 
      * a bit combination of the subset of { 
-     * <code>DERIVATION_RESTRICTION, DERIVATION_EXTENSION, DERIVATION_UNION, DERIVATION_LIST</code>
+     * {@link XSConstants#DERIVATION_RESTRICTION}, {@link XSConstants#DERIVATION_EXTENSION}, {@link XSConstants#DERIVATION_UNION}, {@link XSConstants#DERIVATION_LIST}
      * } corresponding to <code>final</code> set of this type or 
-     * <code>DERIVATION_NONE</code>. 
+     * {@link XSConstants#DERIVATION_NONE}. 
      */
     public short getFinal();
 
@@ -71,13 +74,13 @@ public interface XSTypeDefinition extends XSObject {
 
     /**
      * Convenience method which checks if this type is derived from the given 
-     * <code>ancestorType</code>. 
+     * {@code ancestorType}. 
      * @param ancestorType  An ancestor type definition. 
      * @param derivationMethod  A bit combination representing a subset of {
-     *   <code>DERIVATION_RESTRICTION, DERIVATION_EXTENSION, DERIVATION_UNION, DERIVATION_LIST</code>
+     *   {@link XSConstants#DERIVATION_RESTRICTION}, {@link XSConstants#DERIVATION_EXTENSION}, {@link XSConstants#DERIVATION_UNION}, {@link XSConstants#DERIVATION_LIST}
      *   }. 
-     * @return  True if this type is derived from <code>ancestorType</code> 
-     *   using only derivation methods from the <code>derivationMethod</code>
+     * @return  True if this type is derived from {@code ancestorType}
+     *   using only derivation methods from the {@code derivationMethod}
      *   . 
      */
     public boolean derivedFromType(XSTypeDefinition ancestorType, 
@@ -89,7 +92,7 @@ public interface XSTypeDefinition extends XSObject {
      * @param namespace  An ancestor type namespace. 
      * @param name  An ancestor type name. 
      * @param derivationMethod  A bit combination representing a subset of {
-     *   <code>DERIVATION_RESTRICTION, DERIVATION_EXTENSION, DERIVATION_UNION, DERIVATION_LIST</code>
+     *   {@link XSConstants#DERIVATION_RESTRICTION}, {@link XSConstants#DERIVATION_EXTENSION}, {@link XSConstants#DERIVATION_UNION}, {@link XSConstants#DERIVATION_LIST}
      *   }. 
      * @return  True if this type is derived from <code>ancestorType</code> 
      *   using only derivation methods from the <code>derivationMethod</code>
@@ -102,35 +105,43 @@ public interface XSTypeDefinition extends XSObject {
     /**
      * A property that simplifies testing for the identity of anonymous type
      * definitions.
-     * 
-     * For complex type definition:
-     * 1. If the name [attribute] is present (with the exception of the type being
+     *
+     * <p>For complex type definition:</p>
+	 * <ol>
+	 * <li>If the name [attribute] is present (with the exception of the type being
      *    redefined, number 2 below), then absent, otherwise the Element
-     *    Declaration corresponding to that parent information item
-     * 2. In the case of redefine, the context of the redefined complex type is the
-     *    redefining complex type definition
+     *    Declaration corresponding to that parent information item</li>
+     * <li>In the case of redefine, the context of the redefined complex type is the
+     *    redefining complex type definition</li>
+	 * </ol>
      * 
-     * For simple type definition,
-     * 1. If the name [attribute] is present (with the exception of the type being
-     *    redefined, number 3 below), then absent
-     * 2. otherwise the appropriate case among the following:
-     *    2.1 If the parent element information item is attribute, then the
-     *        corresponding Attribute Declaration
-     *    2.2 If the parent element information item is element, then the
-     *        corresponding Element Declaration
-     *    2.3 If the parent element information item is list or union, then
+     * <p>For simple type definition,</p>
+	 * <ol>
+     * <li>If the name [attribute] is present (with the exception of the type being
+     *    redefined, number 3 below), then absent</li>
+     * <li>otherwise the appropriate case among the following:
+	 *    <ol>
+     *    <li>If the parent element information item is attribute, then the
+     *        corresponding Attribute Declaration</li>
+     *    <li>If the parent element information item is element, then the
+     *        corresponding Element Declaration</li>
+     *    <li>If the parent element information item is list or union, then
      *        the Simple Type Definition corresponding to the grandparent simpleType
-     *        element information item
-     *    2.4 otherwise (the parent element information item is restriction), the
+     *        element information item</li>
+     *    <li>otherwise (the parent element information item is restriction), the
      *        appropriate case among the following:
-     *        2.4.1 If the grandparent element information item is simpleType, then
-     *              the Simple Type Definition corresponding to the grandparent
-     *        2.4.2 otherwise (the grandparent element information item is simpleContent),
+	 *        <ol>
+     *        <li>If the grandparent element information item is simpleType, then
+     *              the Simple Type Definition corresponding to the grandparent</li>
+     *        <li>otherwise (the grandparent element information item is simpleContent),
      *              the Simple Type Definition which is the {content type} of the Complex
      *              Type Definition corresponding to the great-grandparent complexType
-     *              element information item.
-     * 3. In the case of redefine, the context of the redefined simple type is the
-     *    redefining simple type definition
+     *              element information item.</li>
+	 *        </ol></li>
+	 *    </ol></li>
+     * <li>In the case of redefine, the context of the redefined simple type is the
+     *    redefining simple type definition</li>
+	 * </ol>
      */
     public XSObject getContext();
 }
