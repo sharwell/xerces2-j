@@ -21,15 +21,14 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.XMLConstants;
-
 import org.apache.xerces.impl.Constants;
 import org.apache.xerces.impl.xs.assertion.XSAssertImpl;
 import org.apache.xerces.impl.xs.traversers.XSDHandler;
 import org.apache.xerces.impl.xs.util.XS11TypeHelper;
 import org.apache.xerces.util.NamespaceSupport;
 import org.apache.xerces.xs.XSModel;
+import org.eclipse.wst.xml.xpath2.api.Item;
 import org.eclipse.wst.xml.xpath2.processor.DefaultDynamicContext;
 import org.eclipse.wst.xml.xpath2.processor.DefaultEvaluator;
 import org.eclipse.wst.xml.xpath2.processor.DynamicContext;
@@ -48,6 +47,7 @@ import org.eclipse.wst.xml.xpath2.processor.internal.types.AnyType;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSBoolean;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * A class providing common services for XPath expression evaluation, with 'PsychoPath XPath 2.0' engine.
@@ -113,24 +113,24 @@ public class AbstractPsychoPathXPath2Impl {
      */
     protected boolean evaluateXPathExpr(XPath xpathObject, Element contextNode) throws Exception {
         
-        StaticChecker sc = new StaticNameResolver(fXpath2DynamicContext);
+        StaticChecker sc = new StaticNameResolver(new StaticContextAdapter(fXpath2DynamicContext));
         sc.check(xpathObject);       
         DefaultEvaluator xpath2Evaluator = null;
         if (contextNode != null) {
             // for assertions and CTA, root node of XDM tree is the initial context element
-            xpath2Evaluator = new DefaultEvaluator(new StaticContextAdapter(fXpath2DynamicContext), new DynamicContextAdapter(fXpath2DynamicContext), new Object[] { contextNode });
+            xpath2Evaluator = new DefaultEvaluator(new StaticContextAdapter(fXpath2DynamicContext), new DynamicContextAdapter(fXpath2DynamicContext), new Node[] { contextNode });
         }
         else {           
            xpath2Evaluator = new DefaultEvaluator(fXpath2DynamicContext, fDomDoc);
         }
         
-        ResultSequence resultSeq = xpath2Evaluator.evaluate(xpathObject);
+        org.eclipse.wst.xml.xpath2.api.ResultSequence resultSeq = xpath2Evaluator.evaluate(xpathObject);
 
         boolean result = false;
         if (resultSeq == null) {
             result = false;
         } else if (resultSeq.size() == 1) {
-            AnyType rsReturn = resultSeq.get(0);
+            Item rsReturn = resultSeq.item(0);
             if (rsReturn instanceof XSBoolean) {
                 XSBoolean returnResultBool = (XSBoolean) rsReturn;
                 result = returnResultBool.value();

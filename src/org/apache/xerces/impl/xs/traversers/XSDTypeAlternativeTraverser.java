@@ -19,7 +19,6 @@ package org.apache.xerces.impl.xs.traversers;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.xerces.impl.Constants;
 import org.apache.xerces.impl.dv.XSSimpleType;
 import org.apache.xerces.impl.xpath.XPath20;
@@ -32,8 +31,8 @@ import org.apache.xerces.impl.xs.XSComplexTypeDecl;
 import org.apache.xerces.impl.xs.XSElementDecl;
 import org.apache.xerces.impl.xs.alternative.Test;
 import org.apache.xerces.impl.xs.alternative.XSTypeAlternativeImpl;
-import org.apache.xerces.impl.xs.util.XSObjectListImpl;
 import org.apache.xerces.impl.xs.util.XS11TypeHelper;
+import org.apache.xerces.impl.xs.util.XSObjectListImpl;
 import org.apache.xerces.util.DOMUtil;
 import org.apache.xerces.util.NamespaceSupport;
 import org.apache.xerces.util.XMLSymbols;
@@ -47,6 +46,7 @@ import org.eclipse.wst.xml.xpath2.processor.StaticNameResolver;
 import org.eclipse.wst.xml.xpath2.processor.XPathParser;
 import org.eclipse.wst.xml.xpath2.processor.XPathParserException;
 import org.eclipse.wst.xml.xpath2.processor.ast.XPath;
+import org.eclipse.wst.xml.xpath2.processor.internal.StaticContextAdapter;
 import org.w3c.dom.Element;
 
 /**
@@ -207,7 +207,7 @@ class XSDTypeAlternativeTraverser extends XSDAbstractTraverser {
                     Map psychoPathParams = new HashMap();
                     psychoPathParams.put(Constants.XPATH2_NAMESPACE_CONTEXT, schemaDoc.fNamespaceSupport);
                     AbstractPsychoPathXPath2Impl abstractPsychoPathInst = new AbstractPsychoPathXPath2Impl();
-                    StaticChecker name_check = new StaticNameResolver(abstractPsychoPathInst.initXPath2DynamicContext(null, null, psychoPathParams));
+                    StaticChecker name_check = new StaticNameResolver(new StaticContextAdapter(abstractPsychoPathInst.initXPath2DynamicContext(null, null, psychoPathParams)));
                     name_check.check(xp);
                     testExpr = new Test(xp, testStr, typeAlternative, schemaDoc.fNamespaceSupport);
                 }
